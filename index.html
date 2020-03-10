@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="./style.css">
+  <title>Tanner's Hangman</title>
+</head>
+<body>
+  <h1>Hangman</h1>
+  <input type="text" id="letter"><br><br>
+  <button onclick="guessLetter(document.getElementById('letter').value)" id="guessBtn">Guess</button>
+  <h1 id="guessedWord"></h1><br><br>
+  <div id="myScore"></div><br>
+  <div id="myHangman"></div><br>
+  <div id="result"></div><br>
+  <button onclick="restartGame()" id="restartBtn">Restart</button>
+  <div class="tooltip"><strong>Hint</strong>
+    <span class="tooltiptext">Mary Poppins</span>
+  </div>
+</body>
+</html>
+  <script>
+    // Stores the word broken down into an array of letters
+    const word = ['s', 'u', 'p', 'e', 'r', 'c', 'a', 'l', 'i', 'f', 'r', 'a', 'g', 'i', 'l', 'i', 's', 't', 'i', 'c', 'e', 'x', 'p', 'i', 'a', 'l', 'i', 'd', 'o', 'c', 'i', 'o', 'u', 's'];
+    // Will store blanks equal to the amount of letters in 'word', soon to be replaced with correct letters
+    var guessedLetters = [];
+    // Stores letters already guessed
+    var alreadyGuessed = [];
+    var correctWord = word.join("");
+    // Keep track of the amount of times user makes a wrong guess
+    var wrong = 0;
+    // User's score
+    var score = 0;
+    
+    // Populate 'guessedLetters' with underscores
+    for (let i = 0; i < word.length; i++) {
+      guessedLetters[i] = '_';
+    }
+    // Print blanks at start of game
+    document.getElementById("guessedWord").innerHTML = guessedLetters.join(" ");
+    // Start game with a score of 0
+    document.getElementById("myScore").innerHTML = "Score: " + score;
+    // Where the hangman parts will be printed
+    document.getElementById("myHangman").innerHTML = "Hangman:";
+    
+    // This function guesses if the letter a user picks is inside the word they are figuring out
+    function guessLetter(letter) {
+      // If letter has already been guessed, let user know
+      if (alreadyGuessed.includes(letter)) {
+        document.getElementById("letter").value = null;
+        throw new Error(`${letter} has already been used. Guess again.`);
+      }
+      for (let j = 0; j < word.length; j++) {
+        // Check each letter in 'word' to see if it matches the guessed letter; if so, add letter and points
+        if (letter == word[j]) {
+          alreadyGuessed.push(letter);
+          guessedLetters[j] = letter;
+          document.getElementById("guessedWord").innerHTML = guessedLetters.join(" ");
+          score = score + 10;
+          document.getElementById("myScore").innerHTML = "Score: " + score;
+        }
+      }
+      // If there are more no underscores, user wins game
+      if (!(guessedLetters.includes('_'))) {
+        document.getElementById("result").innerHTML = "Winner Winner, Chicken Dinner!";
+      }
+      // If user guesses wrong, start printing hangman and subtracting points
+      if (!(word.includes(letter))) {
+        alreadyGuessed.push(letter);
+        wrong++;
+        score = score - 5;
+        document.getElementById("myScore").innerHTML = "Score: " + score;
+        if (wrong == 1) {
+          document.getElementById("myHangman").innerHTML = "Hangman: Head";
+          console.log("Wrong letter");
+          document.getElementById("letter").value = null;
+        }
+        if (wrong == 2) {
+          document.getElementById("myHangman").innerHTML = "Hangman: Head Torso";
+          console.log("Wrong letter");
+          document.getElementById("letter").value = null;
+        }
+        if (wrong == 3) {
+          document.getElementById("myHangman").innerHTML = "Hangman: Head Torso L-Arm";
+          console.log("Wrong letter");
+          document.getElementById("letter").value = null;
+        }
+        if (wrong == 4) {
+          document.getElementById("myHangman").innerHTML = "Hangman: Head Torso L-Arm R-Arm";
+          console.log("Wrong letter");
+          document.getElementById("letter").value = null;
+        }
+        if (wrong == 5) {
+          document.getElementById("myHangman").innerHTML = "Hangman: Head Torso L-Arm R-Arm L-Leg";
+          console.log("Wrong letter");
+          document.getElementById("letter").value = null;
+        }
+        // If user guesses wrong 6 times, user loses and game resets
+        if (wrong == 6) {
+          document.getElementById("myHangman").innerHTML = "Hangman: Head Torso L-Arm R-Arm L-Leg R-Leg";
+          document.getElementById("result").innerHTML = "You lose! The correct word was: " + correctWord;
+          wrong = 0;
+        }
+      }
+      document.getElementById("letter").value = null;
+    }
+
+    // Press button to restart the entire game 
+    function restartGame() {
+      for (let i = 0; i < word.length; i++) {
+        guessedLetters[i] = '_';
+      }
+      alreadyGuessed = [];
+      score = 0;
+      document.getElementById("guessedWord").innerHTML = guessedLetters.join(" ");
+      document.getElementById("myScore").innerHTML = "Score: " + score;
+      document.getElementById("myHangman").innerHTML = "Hangman:";
+      document.getElementById("result").innerHTML = "";
+    }
+  </script>
